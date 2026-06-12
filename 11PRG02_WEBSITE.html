@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>11PRG02 — Adamson University</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --blue:       #1B4FA8;
+    --blue-dark:  #0D2E6E;
+    --blue-mid:   #2560C0;
+    --blue-light: #4A80D4;
+    --blue-pale:  #C8DAFF;
+    --blue-faint: #E8F0FF;
+    --bg:         #060E22;
+    --bg2:        #0B1530;
+    --bg3:        #101E42;
+    --bg4:        #172550;
+    --text:       #EDF2FF;
+    --muted:      #7A90B8;
+    --border:     rgba(27,79,168,0.45);
+    --border-hi:  rgba(74,128,212,0.6);
+    --serif:      'Playfair Display', serif;
+    --sans:       'Inter', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); overflow-x:hidden; }
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--blue-light); border-radius:3px; }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(6,14,34,0.95); backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    padding:0 2.5rem; height:64px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .nav-brand { display:flex; align-items:center; gap:0.75rem; text-decoration:none; }
+  .nav-logo-img { width:38px; height:38px; object-fit:contain; filter:brightness(1.1); }
+  .nav-name { font-weight:700; font-size:0.95rem; color:var(--text); letter-spacing:0.02em; }
+  .nav-name span { color:var(--blue-pale); }
+  .nav-links { display:flex; gap:0.2rem; }
+  .nav-links a {
+    color:var(--muted); text-decoration:none;
+    font-size:0.78rem; font-weight:500;
+    padding:0.4rem 0.9rem; border-radius:5px;
+    text-transform:uppercase; letter-spacing:0.06em;
+    transition:color .2s, background .2s;
+  }
+  .nav-links a:hover { color:var(--blue-faint); background:rgba(27,79,168,0.25); }
+  .hamburger { display:none; background:none; border:none; cursor:pointer; color:var(--blue-pale); font-size:1.4rem; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:80px 2rem 6rem; text-align:center;
+    position:relative; overflow:hidden;
+  }
+  .hero-bg {
+    position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% -10%, rgba(27,79,168,0.55) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 15% 90%, rgba(27,79,168,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 85% 85%, rgba(37,96,192,0.1) 0%, transparent 60%);
+  }
+  .hero-lines {
+    position:absolute; inset:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(74,128,212,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74,128,212,0.05) 1px, transparent 1px);
+    background-size:56px 56px;
+  }
+  .hero-logo-wrap {
+    position:relative; z-index:1;
+    width:120px; height:120px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.07);
+    border:2px solid rgba(74,128,212,0.5);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 2rem;
+    padding:10px;
+  }
+  .hero-logo-wrap img { width:100%; height:100%; object-fit:contain; filter:brightness(1.05); }
+  .hero-badge {
+    position:relative; z-index:1;
+    display:inline-flex; align-items:center; gap:0.5rem;
+    background:rgba(27,79,168,0.3); border:1px solid rgba(74,128,212,0.5);
+    padding:0.35rem 1.1rem; border-radius:20px; margin-bottom:1.75rem;
+    font-size:0.72rem; font-weight:600; color:var(--blue-pale);
+    letter-spacing:0.12em; text-transform:uppercase;
+  }
+  .hero-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--blue-light); display:inline-block; }
+  .hero h1 {
+    position:relative; z-index:1;
+    font-family:var(--serif);
+    font-size:clamp(2.8rem, 8vw, 5.5rem);
+    font-weight:800; line-height:1.05;
+    letter-spacing:-0.01em; margin-bottom:0.5rem;
+  }
+  .hero h1 .accent { color:var(--blue-pale); }
+  .hero-sub-title {
+    position:relative; z-index:1;
+    font-size:clamp(0.9rem, 2.2vw, 1.15rem);
+    font-weight:400; color:var(--blue-pale);
+    letter-spacing:0.2em; text-transform:uppercase;
+    margin-bottom:1.5rem; opacity:0.75;
+  }
+  .hero-divider {
+    width:70px; height:2px;
+    background:linear-gradient(90deg, transparent, var(--blue-light), transparent);
+    margin:0 auto 2.5rem; position:relative; z-index:1;
+  }
+  .hero-stats {
+    position:relative; z-index:1;
+    display:flex; gap:0; border:1px solid var(--border);
+    border-radius:12px; overflow:hidden;
+    background:rgba(11,21,48,0.7); backdrop-filter:blur(10px);
+  }
+  .hero-stat { padding:1.2rem 2.25rem; text-align:center; border-right:1px solid var(--border); }
+  .hero-stat:last-child { border-right:none; }
+  .hero-stat .num { font-family:var(--serif); font-size:1.85rem; font-weight:800; color:var(--blue-pale); display:block; line-height:1; }
+  .hero-stat .lbl { font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-top:0.3rem; display:block; }
+  .hero-scroll { position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:0.4rem; z-index:1; }
+  .hero-scroll span { font-size:0.62rem; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; }
+  .scroll-line { width:1px; height:36px; background:linear-gradient(to bottom, var(--blue-light), transparent); animation:drop 1.6s ease infinite; }
+  @keyframes drop { 0%{opacity:1;transform:scaleY(1) translateY(0)} 100%{opacity:0;transform:scaleY(0.4) translateY(18px)} }
+
+  /* ── SECTIONS ── */
+  .section-wrap { padding:6rem 2rem; max-width:1160px; margin:0 auto; }
+  .section-eyebrow { display:flex; align-items:center; gap:0.6rem; font-size:0.68rem; font-weight:700; color:var(--blue-light); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.8rem; }
+  .section-eyebrow::before { content:''; width:28px; height:2px; background:var(--blue-light); border-radius:1px; }
+  .section-title { font-family:var(--serif); font-size:clamp(2rem, 4.5vw, 2.9rem); font-weight:800; letter-spacing:-0.01em; line-height:1.15; margin-bottom:1rem; }
+  .section-desc { color:var(--muted); font-size:0.97rem; max-width:520px; line-height:1.75; margin-bottom:3.5rem; }
+  .divider { border:none; border-top:1px solid rgba(27,79,168,0.25); margin:0; }
+
+  /* ── ABOUT ── */
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.25rem; }
+  .about-card { background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:2rem; transition:border-color .25s, transform .25s; }
+  .about-card:hover { border-color:var(--border-hi); transform:translateY(-3px); }
+  .about-icon { font-size:1.8rem; margin-bottom:1rem; }
+  .about-card h3 { font-size:1.05rem; font-weight:700; color:var(--blue-pale); margin-bottom:0.5rem; }
+  .about-card p { color:var(--muted); font-size:0.87rem; line-height:1.75; }
+  .about-banner { background:linear-gradient(135deg, var(--bg3), var(--bg4)); border:1px solid var(--border); border-left:4px solid var(--blue-light); border-radius:0 14px 14px 0; padding:2rem 2.5rem; color:var(--muted); font-size:0.92rem; line-height:1.85; }
+  .about-banner strong { color:var(--text); }
+  .about-banner .accent { color:var(--blue-pale); font-weight:600; }
+
+  /* ── STUDENTS ── */
+  .filter-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2.5rem; }
+  .filter-btn { background:var(--bg3); border:1px solid var(--border); color:var(--muted); padding:0.4rem 1rem; border-radius:6px; font-size:0.78rem; font-weight:500; cursor:pointer; font-family:var(--sans); letter-spacing:0.04em; transition:all .2s; }
+  .filter-btn:hover { border-color:var(--border-hi); color:var(--blue-pale); }
+  .filter-btn.active { background:var(--blue); border-color:var(--blue-light); color:var(--blue-faint); }
+  .students-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:1.1rem; }
+  .student-card { background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:1.5rem 1.25rem; text-align:center; cursor:pointer; transition:transform .2s, border-color .2s, box-shadow .2s; }
+  .student-card:hover { transform:translateY(-5px); border-color:var(--border-hi); box-shadow:0 10px 30px rgba(0,0,0,0.4); }
+  .s-avatar { width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, var(--blue-dark), var(--blue-mid)); border:2px solid var(--blue-light); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; color:var(--blue-pale); margin:0 auto 1rem; }
+  .s-name { font-size:0.9rem; font-weight:600; color:var(--text); margin-bottom:0.2rem; }
+  .s-role { font-size:0.68rem; font-weight:700; color:var(--blue-light); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.7rem; }
+  .s-tags { display:flex; gap:0.3rem; justify-content:center; flex-wrap:wrap; }
+  .s-tag { background:rgba(27,79,168,0.3); border:1px solid rgba(74,128,212,0.35); color:var(--blue-pale); font-size:0.63rem; padding:0.15rem 0.45rem; border-radius:4px; }
+
+  /* ── MODAL ── */
+  .modal-overlay { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1rem; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--bg3); border:1px solid var(--border); border-top:3px solid var(--blue-light); border-radius:16px; padding:2.5rem; max-width:460px; width:100%; position:relative; animation:pop .22s ease; }
+  @keyframes pop { from{transform:scale(.94);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal-close { position:absolute; top:1rem; right:1rem; background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:6px; transition:color .2s,background .2s; }
+  .modal-close:hover { color:var(--text); background:var(--bg4); }
+  .m-avatar { width:76px; height:76px; border-radius:50%; background:linear-gradient(135deg, var(--blue-dark), var(--blue-mid)); border:3px solid var(--blue-light); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.4rem; color:var(--blue-pale); margin:0 auto 1.25rem; }
+  .modal h2 { font-family:var(--serif); font-size:1.3rem; text-align:center; margin-bottom:0.2rem; }
+  .m-role { font-size:0.72rem; font-weight:700; color:var(--blue-light); text-align:center; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1.5rem; }
+  .m-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem; }
+  .m-item label { font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:0.2rem; }
+  .m-item span { font-size:0.88rem; color:var(--text); }
+  .m-bio { color:var(--muted); font-size:0.86rem; line-height:1.75; border-top:1px solid var(--border); padding-top:1rem; }
+
+  /* ── SCHEDULE ── */
+  .day-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem; }
+  .day-tab { background:var(--bg3); border:1px solid var(--border); color:var(--muted); padding:0.45rem 1.2rem; border-radius:7px; font-size:0.82rem; font-weight:500; cursor:pointer; font-family:var(--sans); transition:all .2s; }
+  .day-tab:hover { border-color:var(--border-hi); color:var(--text); }
+  .day-tab.active { background:var(--blue); border-color:var(--blue-light); color:var(--blue-faint); }
+  .sched-table { width:100%; border-collapse:collapse; border-radius:14px; overflow:hidden; border:1px solid var(--border); }
+  .sched-table thead tr { background:linear-gradient(90deg, var(--blue-dark), var(--blue)); }
+  .sched-table th { text-align:left; padding:1rem 1.5rem; font-size:0.72rem; color:var(--blue-pale); font-weight:700; letter-spacing:0.12em; text-transform:uppercase; }
+  .sched-table td { padding:0.9rem 1.5rem; font-size:0.87rem; border-bottom:1px solid rgba(27,79,168,0.15); vertical-align:middle; }
+  .sched-table tr:last-child td { border-bottom:none; }
+  .sched-table tbody tr:hover td { background:rgba(27,79,168,0.12); }
+  .subj-pill { display:inline-block; padding:0.22rem 0.7rem; border-radius:5px; font-size:0.8rem; font-weight:500; }
+  .subj-prog  { background:rgba(27,79,168,0.35); color:var(--blue-pale); border:1px solid rgba(74,128,212,0.45); }
+  .subj-core  { background:rgba(74,128,212,0.2); color:#b3ccff; border:1px solid rgba(74,128,212,0.35); }
+  .subj-other { background:rgba(122,144,184,0.15); color:#a0b4d4; border:1px solid rgba(122,144,184,0.25); }
+  .t-col { font-size:0.75rem; color:var(--muted); font-weight:600; letter-spacing:0.03em; }
+  .sched-table tr.break-row td { background:rgba(255,255,255,0.015); color:rgba(122,144,184,0.5); font-size:0.78rem; font-style:italic; }
+
+  /* ── GALLERY ── */
+  .gallery-grid { columns:3; gap:1rem; }
+  .gal-item { break-inside:avoid; margin-bottom:1rem; border-radius:12px; overflow:hidden; border:1px solid var(--border); cursor:pointer; transition:transform .2s, border-color .2s; background:var(--bg3); }
+  .gal-item:hover { transform:scale(1.02); border-color:var(--border-hi); }
+  .gal-ph { width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2rem 1.25rem; min-height:130px; }
+  .gal-icon { font-size:2rem; margin-bottom:0.6rem; }
+  .gal-caption { font-size:0.8rem; color:var(--muted); }
+  .gal-date { font-size:0.68rem; color:rgba(74,128,212,0.65); margin-top:0.25rem; }
+  .gal-1 { background:linear-gradient(135deg, rgba(27,79,168,0.25), rgba(74,128,212,0.1)); }
+  .gal-2 { background:linear-gradient(135deg, rgba(13,46,110,0.3), rgba(37,96,192,0.15)); }
+  .gal-3 { background:linear-gradient(135deg, rgba(37,96,192,0.2), rgba(27,79,168,0.15)); }
+  
+  /* NEW: Style for the Google Drive Button */
+  .upload-hint { background:var(--bg3); border:1px dashed rgba(74,128,212,0.35); border-radius:12px; padding:2rem; text-align:center; margin-top:2rem; }
+  .upload-hint p { color:var(--muted); font-size:0.9rem; line-height:1.7; margin-bottom:1rem; }
+  .drive-btn {
+    display:inline-block;
+    padding:0.75rem 1.5rem;
+    background:var(--blue-mid);
+    color:var(--text);
+    text-decoration:none;
+    font-weight:600;
+    font-size:0.9rem;
+    border-radius:8px;
+    transition:background 0.2s, transform 0.2s;
+  }
+  .drive-btn:hover { background:var(--blue-light); transform:translateY(-2px); }
+
+  /* ── FOOTER ── */
+  footer { background:var(--bg2); border-top:1px solid var(--border); padding:3.5rem 2rem; text-align:center; }
+  .footer-logo { width:56px; height:56px; object-fit:contain; margin:0 auto 1rem; display:block; filter:brightness(1.05); }
+  .footer-name { font-family:var(--serif); font-size:1.2rem; font-weight:800; color:var(--text); margin-bottom:0.3rem; }
+  .footer-sub { color:var(--muted); font-size:0.82rem; margin-bottom:1.5rem; }
+  .footer-links { display:flex; justify-content:center; gap:2rem; margin-bottom:2rem; }
+  .footer-links a { color:var(--muted); text-decoration:none; font-size:0.82rem; transition:color .2s; }
+  .footer-links a:hover { color:var(--blue-pale); }
+  .footer-line { width:60px; height:2px; background:linear-gradient(90deg, transparent, var(--blue-light), transparent); margin:0 auto 1.5rem; }
+  .footer-copy { color:rgba(122,144,184,0.45); font-size:0.72rem; }
+
+  @media(max-width:768px) {
+    .nav-links { display:none; }
+    .nav-links.open { display:flex; flex-direction:column; position:fixed; top:64px; left:0; right:0; background:var(--bg2); padding:1rem 2rem; border-bottom:1px solid var(--border); }
+    .hamburger { display:block; }
+    .about-grid { grid-template-columns:1fr; }
+    .gallery-grid { columns:2; }
+    .hero-stats { flex-direction:column; }
+    .hero-stat { border-right:none; border-bottom:1px solid var(--border); }
+    .hero-stat:last-child { border-bottom:none; }
+    .section-wrap { padding:4rem 1.5rem; }
+  }
+  @media(max-width:480px) { .gallery-grid{columns:1;} .m-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="#top">
+    <img class="nav-logo-img" src="adamson-university-logo-png_seeklogo-406201.png" alt="Adamson University"/>
+    <div class="nav-name">11<span>PRG02</span></div>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="#about">About</a>
+    <a href="#students">Students</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#gallery">Gallery</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-logo-wrap">
+    <img src="adamson-university-logo-png_seeklogo-406201.png" alt="Adamson University seal"/>
+  </div>
+  <div class="hero-badge">Adamson University · Senior High School</div>
+  <h1>Block <span class="accent">11PRG02</span></h1>
+  <p class="hero-sub-title">Programming &amp; Analytics</p>
+  <div class="hero-divider"></div>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num">30</span><span class="lbl">Students</span></div>
+    <div class="hero-stat"><span class="num">SY 24–25</span><span class="lbl">School Year</span></div>
+    <div class="hero-stat"><span class="num">CS411</span><span class="lbl">Our Room</span></div>
+  </div>
+  <div class="hero-scroll"><span>scroll</span><div class="scroll-line"></div></div>
+</header>
+
+<hr class="divider"/>
+
+<div class="section-wrap" id="about">
+  <div class="section-eyebrow">01 · About</div>
+  <h2 class="section-title">Our Block Story</h2>
+  <p class="section-desc">One block. One room. One goal — to build, analyze, and lead in tech.</p>
+  <div class="about-grid">
+    <div class="about-card">
+      <div class="about-icon">💻</div>
+      <h3>Programming Pathway</h3>
+      <p>We learn core programming languages, software development methodologies, algorithms, and real-world coding — groundwork for CS degrees and tech careers.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">📊</div>
+      <h3>Analytics Pathway</h3>
+      <p>Data visualization, basic statistics, spreadsheet tools, and database management — the essential skills of a data-driven world.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">🏫</div>
+      <h3>Adamson University</h3>
+      <p>Based in Manila, Adamson University is one of the Philippines' foremost universities — a Vincentian institution known for engineering, technology, and service.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">🎯</div>
+      <h3>Our Room: CS411</h3>
+      <p>Every class, every breakthrough, every "why is my code not working" moment — it all happens in CS411. Our shared space, our shared identity.</p>
+    </div>
+  </div>
+  <div class="about-banner">
+    <strong>Block 11PRG02</strong> is part of Adamson University's Senior High School ICT strand under the <span class="accent">Programming &amp; Analytics</span> specialization. We are Grade 11 students who chose this pathway out of genuine passion for technology, problem-solving, and building things that matter.<br/><br/>
+    We code. We debug. We stay up late fixing errors. We collaborate, argue over semi-colons, and present work we're proud of. At the end of the day, we are one block with one mission — to become the developers and data analysts who will shape tomorrow's digital landscape. <strong>Formidable. Faithful. Adamson.</strong>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section-wrap" id="students">
+  <div class="section-eyebrow">02 · Students</div>
+  <h2 class="section-title">Meet the Block</h2>
+  <p class="section-desc">Click any card to view a full profile. Filter by role below.</p>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-role="all">All</button>
+    <button class="filter-btn" data-role="developer">Developer</button>
+    <button class="filter-btn" data-role="analyst">Analyst</button>
+    <button class="filter-btn" data-role="designer">UI / Designer</button>
+    <button class="filter-btn" data-role="officer">Class Officer</button>
+  </div>
+  <div class="students-grid" id="studentsGrid"></div>
+</div>
+
+<div class="modal-overlay" id="studentModal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="m-avatar" id="mAvatar"></div>
+    <h2 id="mName"></h2>
+    <div class="m-role" id="mRole"></div>
+    <div class="m-grid">
+      <div class="m-item"><label>Specialty</label><span id="mSpec"></span></div>
+      <div class="m-item"><label>Fave Language</label><span id="mLang"></span></div>
+      <div class="m-item"><label>Dream Job</label><span id="mDream"></span></div>
+      <div class="m-item"><label>Fun Fact</label><span id="mFun"></span></div>
+    </div>
+    <div class="m-bio" id="mBio"></div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section-wrap" id="schedule">
+  <div class="section-eyebrow">03 · Schedule</div>
+  <h2 class="section-title">Class Schedule</h2>
+  <p class="section-desc">Weekly timetable for S.Y. 2024–2025 · Room CS411. Select a day.</p>
+  <div class="day-tabs" id="dayTabs"></div>
+  <table class="sched-table">
+    <thead><tr><th>Time</th><th>Subject</th><th>Type</th></tr></thead>
+    <tbody id="schedBody"></tbody>
+  </table>
+</div>
+
+<hr class="divider"/>
+
+<div class="section-wrap" id="gallery">
+  <div class="section-eyebrow">04 · Gallery</div>
+  <h2 class="section-title">Photo Gallery</h2>
+  <p class="section-desc">Memories from block activities, events, and everyday moments in CS411.</p>
+  <div class="gallery-grid" id="galleryGrid"></div>
+  <div class="upload-hint">
+    <p>Want to see more of our memories?</p>
+    <a href="https://drive.google.com/drive/folders/1qecAK0TNHZal3pHTAkqkDnt-CwTyVv1G?usp=sharing" target="_blank" class="drive-btn">📁 View Full Gallery on Google Drive</a>
+  </div>
+</div>
+
+<footer>
+  <img class="footer-logo" src="adamson-university-logo-png_seeklogo-406201.png" alt="Adamson University"/>
+  <div class="footer-name">Block 11PRG02</div>
+  <div class="footer-sub">Programming &amp; Analytics · Adamson University · Senior High School</div>
+  <div class="footer-line"></div>
+  <div class="footer-links">
+    <a href="#about">About</a>
+    <a href="#students">Students</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#gallery">Gallery</a>
+  </div>
+  <div class="footer-copy">© 2024–2025 Block 11PRG02 · CS411 · Adamson University Manila</div>
+</footer>
+
+<script>
+const students = [
+  { name:"Alex Reyes",       initials:"AR", role:"developer", specialty:"Web Dev",       lang:"JavaScript", dream:"Full-Stack Dev",     fun:"Codes at 3 AM",          bio:"The go-to when JavaScript breaks. Alex lives front-end and dreams of building the next big app from CS411." },
+  { name:"Bianca Santos",    initials:"BS", role:"analyst",   specialty:"Data Viz",      lang:"Python",     dream:"Data Scientist",     fun:"Excel wizard",           bio:"Charts are Bianca's love language. Passionate about turning raw data into compelling visual stories." },
+  { name:"Carlo Mendoza",    initials:"CM", role:"developer", specialty:"Backend",       lang:"Java",       dream:"Software Engineer",  fun:"Debugs in their sleep",  bio:"Carlo is all about clean, efficient backend logic. OOP enthusiast and aspiring software architect." },
+  { name:"Diana Cruz",       initials:"DC", role:"officer",   specialty:"PM & Dev",      lang:"Python",     dream:"Tech Entrepreneur",  fun:"Class president",        bio:"Our class president keeps everything running smoothly while still finding time to code." },
+  { name:"Ethan Dela Cruz",  initials:"ED", role:"developer", specialty:"Mobile Apps",   lang:"Kotlin",     dream:"Mobile Dev",         fun:"Owns 5 keyboards",       bio:"Ethan is on a mission to build the most useful mobile apps the Philippines has ever seen." },
+  { name:"Fiona Lim",        initials:"FL", role:"designer",  specialty:"UI/UX",         lang:"CSS/HTML",   dream:"UX Designer",        fun:"Color-codes everything", bio:"Fiona sees the world in user journeys and wireframes. Her designs always get the 'wow'." },
+  { name:"Gabriel Torres",   initials:"GT", role:"developer", specialty:"Algorithms",    lang:"C++",        dream:"Systems Engineer",   fun:"Solves LeetCode daily",  bio:"Gabriel loves optimization. Ask him to sort a list and he'll give you 5 faster ways." },
+  { name:"Hannah Aquino",    initials:"HA", role:"analyst",   specialty:"Statistics",    lang:"R",          dream:"Business Analyst",   fun:"Stats nerd",             bio:"Numbers never lie — Hannah's philosophy. Headed for the intersection of tech and business." },
+  { name:"Ivan Ramos",       initials:"IR", role:"developer", specialty:"Game Dev",      lang:"C#",         dream:"Game Developer",     fun:"Indie dev on weekends",  bio:"Ivan is building his first indie game between homework sessions. Unity is his playground." },
+  { name:"Jasmine Flores",   initials:"JF", role:"designer",  specialty:"Graphic/UI",    lang:"Figma",      dream:"Creative Director",  fun:"Makes all the posters",  bio:"Jasmine is the artist of the block. Every project presentation level jumps when she's involved." },
+  { name:"Kevin Morales",    initials:"KM", role:"developer", specialty:"Cybersecurity", lang:"Bash/Python", dream:"Security Engineer", fun:"CTF champion",           bio:"Kevin thinks like a hacker — to defend better. Already competing in CTF events." },
+  { name:"Lara Tan",         initials:"LT", role:"analyst",   specialty:"Databases",     lang:"SQL",        dream:"DBA",                fun:"Organizes everything",   bio:"Lara brings structure to chaos. Her databases are always perfectly normalized." },
+  { name:"Marco Soriano",    initials:"MS", role:"developer", specialty:"Web Dev",       lang:"React",      dream:"Front-End Dev",      fun:"React enthusiast",       bio:"Marco discovered React and never looked back. Building interactive UIs is his happy place." },
+  { name:"Nina Villanueva",  initials:"NV", role:"officer",   specialty:"Org & Dev",     lang:"JavaScript", dream:"CTO someday",        fun:"Vice President",         bio:"Nina balances org duties with a growing love for JavaScript. Already thinking 5 years ahead." },
+  { name:"Oscar Bautista",   initials:"OB", role:"developer", specialty:"IoT",           lang:"C/C++",      dream:"Embedded Engineer",  fun:"Built an LED matrix",    bio:"Oscar connects the physical and digital worlds. Arduino and Raspberry Pi are his toys." },
+  { name:"Patricia Go",      initials:"PG", role:"analyst",   specialty:"ML Basics",     lang:"Python",     dream:"AI Engineer",        fun:"Reads ML papers",        bio:"Patricia is fascinated by machine learning and already diving into sklearn and neural nets." },
+  { name:"Quentin Uy",       initials:"QU", role:"developer", specialty:"APIs",          lang:"Node.js",    dream:"Backend Engineer",   fun:"REST API fanatic",       bio:"Quentin speaks fluent HTTP. If there's a backend to build, he's already halfway done." },
+  { name:"Reina Castro",     initials:"RC", role:"designer",  specialty:"Motion/UI",     lang:"CSS",        dream:"Motion Designer",    fun:"CSS animations guru",    bio:"Reina makes things move beautifully. CSS animations and micro-interactions are her signature." },
+  { name:"Samuel Ong",       initials:"SO", role:"developer", specialty:"Cloud",         lang:"Python",     dream:"Cloud Architect",    fun:"Deploys stuff for fun",   bio:"Samuel is fascinated by serverless and cloud. Already deployed personal projects on AWS." },
+  { name:"Tricia Delos Reyes",initials:"TR",role:"analyst",   specialty:"Visualization", lang:"Tableau",    dream:"Data Analyst",       fun:"Dashboard perfectionist",bio:"Every dashboard Tricia builds looks like it belongs in a Forbes article." },
+  { name:"Uriel Navarro",    initials:"UN", role:"developer", specialty:"Open Source",   lang:"Rust",       dream:"OSS Contributor",    fun:"Has 12 GitHub repos",    bio:"Uriel contributes to open-source in his free time. Rust is his latest obsession." },
+  { name:"Vanessa Reyna",    initials:"VR", role:"analyst",   specialty:"Research",      lang:"Excel/SQL",  dream:"Research Analyst",   fun:"Annotates everything",   bio:"Vanessa pairs analytical rigor with a researcher's curiosity. Always asking 'but why?'" },
+  { name:"Wilfred Chan",     initials:"WC", role:"developer", specialty:"DevOps",        lang:"YAML/Bash",  dream:"DevOps Engineer",    fun:"CI/CD pipeline nerd",    bio:"Wilfred loves automation. If something can be scripted, he's already written the script." },
+  { name:"Xyra Padilla",     initials:"XP", role:"designer",  specialty:"Branding",      lang:"Figma/HTML", dream:"Brand Designer",     fun:"Redesigns apps for fun", bio:"Xyra has a designer's eye and a developer's hands. She builds what she designs." },
+  { name:"Yvan Espiritu",    initials:"YE", role:"developer", specialty:"Blockchain",    lang:"Solidity",   dream:"Blockchain Dev",     fun:"Web3 believer",          bio:"Yvan is convinced Web3 is the future. Already writing smart contracts and learning DeFi." },
+  { name:"Zara Miranda",     initials:"ZM", role:"analyst",   specialty:"Business Intel",lang:"Power BI",   dream:"BI Developer",       fun:"Dashboard connoisseur",  bio:"Zara connects data to business decisions. Power BI dashboards that make management understand data." },
+  { name:"Angelo Reyes",     initials:"AR", role:"developer", specialty:"Web Scraping",  lang:"Python",     dream:"Automation Dev",     fun:"Automates his chores",   bio:"Angelo believes anything repetitive should be automated. His scripts save hours every week." },
+  { name:"Bea Pascual",      initials:"BP", role:"officer",   specialty:"Comms & Dev",   lang:"JavaScript", dream:"Tech Journalist",    fun:"Block secretary",        bio:"Bea documents everything — minutes, code comments, blog posts. The block's voice and memory." },
+  { name:"Chris Navarro",    initials:"CN", role:"developer", specialty:"Networking",    lang:"Python/Cisco",dream:"Network Engineer",  fun:"Mapped the school LAN",  bio:"Chris understands how data travels. Networking fundamentals are his foundation." },
+  { name:"Dana Villanueva",  initials:"DV", role:"analyst",   specialty:"Data Cleaning", lang:"Python/SQL", dream:"Data Engineer",      fun:"Hates dirty data",       bio:"Dana knows clean data is the foundation of everything. ETL pipelines are her specialty." },
+];
+
+const scheduleData = {
+  Monday: [
+    { time:"10:20–12:20", subject:"Programming",             type:"prog"  },
+    { time:"12:20–1:00",  subject:"Break / Lunch Time",      type:"break" },
+    { time:"1:00–2:00",   subject:"Gen. Science",            type:"core"  },
+    { time:"2:00–3:00",   subject:"Life and Career Skills",  type:"other" },
+    { time:"3:00–4:00",   subject:"Christian Living 1",      type:"other" },
+  ],
+  Tuesday: [
+    { time:"7:00–8:00",   subject:"Gen. Math",               type:"core"  },
+    { time:"8:00–9:00",   subject:"Pag-aaral ng Kasaysayan", type:"core"  },
+    { time:"9:00–10:00",  subject:"Effective Communication", type:"other" },
+    { time:"10:00–10:20", subject:"Break / Recess",          type:"break" },
+    { time:"10:20–12:20", subject:"Programming",             type:"prog"  },
+    { time:"12:20–1:00",  subject:"Break / Lunch Time",      type:"break" },
+    { time:"1:00–2:00",   subject:"Gen. Science",            type:"core"  },
+    { time:"2:00–3:00",   subject:"Life and Career Skills",  type:"other" },
+    { time:"3:00–4:00",   subject:"Christian Living 1",      type:"other" },
+  ],
+  Wednesday: [
+    { time:"7:00–8:00",   subject:"Gen. Math",               type:"core"  },
+    { time:"8:00–9:00",   subject:"Pag-aaral ng Kasaysayan", type:"core"  },
+    { time:"9:00–10:00",  subject:"Effective Communication", type:"other" },
+    { time:"10:00–10:20", subject:"Break / Recess",          type:"break" },
+    { time:"12:20–1:00",  subject:"Break / Lunch Time",      type:"break" },
+  ],
+  Thursday: [
+    { time:"7:00–8:00",   subject:"Gen. Math",               type:"core"  },
+    { time:"8:00–9:00",   subject:"Pag-aaral ng Kasaysayan", type:"core"  },
+    { time:"9:00–10:00",  subject:"Mabisang Komunikasyon",   type:"other" },
+    { time:"10:00–10:20", subject:"Break / Recess",          type:"break" },
+    { time:"10:20–12:20", subject:"Programming",             type:"prog"  },
+    { time:"12:20–1:00",  subject:"Break / Lunch Time",      type:"break" },
+    { time:"1:00–2:00",   subject:"Gen. Science",            type:"core"  },
+    { time:"2:00–3:00",   subject:"Life and Career Skills",  type:"other" },
+    { time:"3:00–4:00",   subject:"Christian Living 1",      type:"other" },
+  ],
+  Friday: [
+    { time:"7:00–8:00",   subject:"Gen. Math",               type:"core"  },
+    { time:"8:00–9:00",   subject:"Pag-aaral ng Kasaysayan", type:"core"  },
+    { time:"9:00–10:00",  subject:"Mabisang Komunikasyon",   type:"other" },
+    { time:"10:00–10:20", subject:"Break / Recess",          type:"break" },
+    { time:"10:20–12:20", subject:"Programming",             type:"prog"  },
+    { time:"12:20–1:00",  subject:"Break / Lunch Time",      type:"break" },
+    { time:"1:00–2:00",   subject:"Gen. Science",            type:"core"  },
+    { time:"2:00–3:00",   subject:"Life and Career Skills",  type:"other" },
+    { time:"3:00–4:00",   subject:"Christian Living 1",      type:"other" },
+  ],
+};
+
+const gallery = [
+  { emoji:"🏫", bg:"gal-1", caption:"First day of classes",       date:"June 2024" },
+  { emoji:"💻", bg:"gal-2", caption:"First ICT Lab session",      date:"July 2024" },
+  { emoji:"🎤", bg:"gal-3", caption:"Project presentation day",   date:"Aug 2024"  },
+  { emoji:"🏆", bg:"gal-1", caption:"Block recognition awards",   date:"Sep 2024"  },
+  { emoji:"🍕", bg:"gal-2", caption:"Merienda Friday tradition",  date:"Oct 2024"  },
+  { emoji:"📸", bg:"gal-3", caption:"Yearbook block photo",       date:"Nov 2024"  },
+  { emoji:"🎄", bg:"gal-1", caption:"Christmas party & exchange", date:"Dec 2024"  },
+  { emoji:"📐", bg:"gal-2", caption:"Hackathon prep night",       date:"Jan 2025"  },
+  { emoji:"🎓", bg:"gal-3", caption:"Graduation practice run",    date:"Mar 2025"  },
+];
+
+function renderStudents(filter) {
+  const grid = document.getElementById('studentsGrid');
+  const list = filter === 'all' ? students : students.filter(s => s.role === filter);
+  grid.innerHTML = list.map(s => {
+    const i = students.indexOf(s);
+    return `<div class="student-card" onclick="openModal(${i})">
+      <div class="s-avatar">${s.initials}</div>
+      <div class="s-name">${s.name}</div>
+      <div class="s-role">${s.role}</div>
+      <div class="s-tags">
+        <span class="s-tag">${s.specialty}</span>
+        <span class="s-tag">${s.lang}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+renderStudents('all');
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderStudents(btn.dataset.role);
+  });
+});
+
+function openModal(i) {
+  const s = students[i];
+  document.getElementById('mAvatar').textContent = s.initials;
+  document.getElementById('mName').textContent   = s.name;
+  document.getElementById('mRole').textContent   = s.role.toUpperCase() + ' · ' + s.specialty;
+  document.getElementById('mSpec').textContent   = s.specialty;
+  document.getElementById('mLang').textContent   = s.lang;
+  document.getElementById('mDream').textContent  = s.dream;
+  document.getElementById('mFun').textContent    = s.fun;
+  document.getElementById('mBio').textContent    = s.bio;
+  document.getElementById('studentModal').classList.add('open');
+}
+document.getElementById('modalClose').onclick = () => document.getElementById('studentModal').classList.remove('open');
+document.getElementById('studentModal').addEventListener('click', e => { if(e.target===e.currentTarget) e.currentTarget.classList.remove('open'); });
+
+const days = Object.keys(scheduleData);
+const tabsEl = document.getElementById('dayTabs');
+days.forEach((day, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'day-tab' + (i===0?' active':'');
+  btn.textContent = day;
+  btn.onclick = () => {
+    document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderSchedule(day);
+  };
+  tabsEl.appendChild(btn);
+});
+function renderSchedule(day) {
+  const typeLabels = { prog:'Programming', core:'Core Subject', other:'Applied Track' };
+  document.getElementById('schedBody').innerHTML = scheduleData[day].map(r => {
+    if (r.type === 'break') return `<tr class="break-row"><td>${r.time}</td><td colspan="2">${r.subject}</td></tr>`;
+    return `<tr>
+      <td class="t-col">${r.time}</td>
+      <td><span class="subj-pill subj-${r.type}">${r.subject}</span></td>
+      <td style="font-size:0.72rem;color:var(--muted)">${typeLabels[r.type]||''}</td>
+    </tr>`;
+  }).join('');
+}
+renderSchedule(days);
+
+document.getElementById('galleryGrid').innerHTML = gallery.map(g => `
+  <div class="gal-item">
+    <div class="gal-ph ${g.bg}">
+      <div class="gal-icon">${g.emoji}</div>
+      <div class="gal-caption">${g.caption}</div>
+      <div class="gal-date">${g.date}</div>
+    </div>
+  </div>`).join('');
+
+document.getElementById('hamburger').onclick = () => document.getElementById('navLinks').classList.toggle('open');
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open')));
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const el = document.querySelector(a.getAttribute('href'));
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+});
+</script>
+</body>
+</html>
